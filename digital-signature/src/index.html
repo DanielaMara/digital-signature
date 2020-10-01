@@ -923,26 +923,31 @@
 <body>
   <app-root></app-root>
 
+  <br><br>
+  <h1>ICP Bravo Access</h1>
   <br><br><br><br>
-  <div>
-    <h1>ICP Bravo Access</h1>
+  <div class="card-container">
+    <div class=" card-small">
+      <select id="certificateSelect"></select>
+    </div>
 
-    <select id="certificateSelect"></select>
+    <div class="card card-small">
+        <input type="button" value="Carregar Certificados" onclick="onGetCertificateList()">
+    </div>
 
-    <input type="button" value="Carregar Certificados" onclick="onGetCertificateList()">
+    <div class="card card-small">
+        <input type="button" value="Ler Certificado Selecionado" onclick="onGetCertificate()">
+    </div>
 
-    <input type="button" value="Pegar Certificado" onclick="onGetCertificate()">
-
-    <!-- <input type="button" value="Assinar" onclick="onAssinar()"> -->
-
-    <!-- <script type="text/javascript">
-      onLoadPage();
-    </script> -->
+    <br><br>
 
     <div id="icpbravoaccess_loaded"></div>
   </div>
 
   <br><br><br><br>
+  <div class="line"></div>
+  <br><br><br><br>
+
   <div>
     <h1>FORTIFY</h1>
     <peculiar-fortify-certificates hide-footer language="pt-Br" />
