@@ -15,22 +15,22 @@
   <!-- ******************************* FORTIFY *************************************************** -->
   <!-- ******************************************************************************************* -->
 
-    <!-- Babel Polyfill -->
-    <script defer src="https://fortifyapp.com/external/babel-polyfill/6.26.0/polyfill.min.js"></script>
+  <!-- Babel Polyfill -->
+  <script defer src="https://fortifyapp.com/external/babel-polyfill/6.26.0/polyfill.min.js"></script>
 
-    <!-- Fetch Polyfill -->
-    <script defer nomodule src="https://fortifyapp.com/external/whatwg-fetch@3.0.0/fetch.umd.js"></script>
+  <!-- Fetch Polyfill -->
+  <script defer nomodule src="https://fortifyapp.com/external/whatwg-fetch@3.0.0/fetch.umd.js"></script>
 
-    <!-- Crypto Polyfill -->
-    <script defer src="https://fortifyapp.com/external/asmCrypto/2.3.2/asmcrypto.all.es5.min.js"></script>
-    <script defer src="https://fortifyapp.com/external/elliptic/elliptic.min.js"></script>
-    <script defer type="module" src="https://fortifyapp.com/external/webcrypto-liner/1.2.3/webcrypto-liner.shim.min.mjs"></script>
-    <script defer nomodule src="https://fortifyapp.com/external/webcrypto-liner/1.2.3/webcrypto-liner.shim.min.js"></script>
+  <!-- Crypto Polyfill -->
+  <script defer src="https://fortifyapp.com/external/asmCrypto/2.3.2/asmcrypto.all.es5.min.js"></script>
+  <script defer src="https://fortifyapp.com/external/elliptic/elliptic.min.js"></script>
+  <script defer type="module" src="https://fortifyapp.com/external/webcrypto-liner/1.2.3/webcrypto-liner.shim.min.mjs"></script>
+  <script defer nomodule src="https://fortifyapp.com/external/webcrypto-liner/1.2.3/webcrypto-liner.shim.min.js"></script>
 
-    <!-- WebCrypto Socket -->
-    <script defer src="https://fortifyapp.com/external/protobuf/6.8.0/protobuf.min.js"></script>
-    <script defer type="module" src="https://fortifyapp.com/external/webcrypto-local/client/1.1.7/webcrypto-socket.min.mjs"></script>
-    <script defer nomodule src="https://fortifyapp.com/external/webcrypto-local/client/1.1.7/webcrypto-socket.min.js"></script>
+  <!-- WebCrypto Socket -->
+  <script defer src="https://fortifyapp.com/external/protobuf/6.8.0/protobuf.min.js"></script>
+  <script defer type="module" src="https://fortifyapp.com/external/webcrypto-local/client/1.1.7/webcrypto-socket.min.mjs"></script>
+  <script defer nomodule src="https://fortifyapp.com/external/webcrypto-local/client/1.1.7/webcrypto-socket.min.js"></script>
 
 
   <!-- WEB COMPONENT -->
@@ -799,10 +799,7 @@
     }
 
     function onGetCertificate() {
-
       blockui("Buscando Certificado....");
-
-      debugger
 
       var option = document.getElementById("certificateSelect");
       var certificateThumbprint = option[option.selectedIndex].value;
@@ -818,11 +815,9 @@
     function onGetCertificateList() {
       blockui("Carregando Certificados....");
 
-      debugger
-
       icpBravoAccessExt.getCertificateList({
         filter: {
-
+          type: 'icpbrasil'
         },
         onSuccess: onCertificatesLoaded,
         onError: onError
@@ -832,13 +827,20 @@
     function onLoadPage() {
       blockui("Conectando....");
 
-      debugger
       icpBravoAccessExt.connect({
         license: "c2N5dGxfZGVtbw==",
         onSuccess: onGetCertificateList,
         onError: onError,
         onNotInstalled: function (response) {
+          // LOG DATA
+          var logData = {
+            type: "[ICP Bravo] onNotInstalled method",
+            data: response
+          }
+          logData(logData);
+
           unblockui();
+
           alert(response.statusMessage);
         },
       });
@@ -847,76 +849,118 @@
 
 
 
+    /* BEGIN ----------------------------------------- icpBravoAccessExt response dealers ----------------------------------------- */
 
+    function onCertificatesLoaded(response) {
+      var certificates = response.certificates;
+      var e = document.getElementById("certificateSelect");
 
+      e.options.length = 0;
 
-  /* BEGIN ----------------------------------------- icpBravoAccessExt response dealers ----------------------------------------- */
+      for (i = 0; i < certificates.length; i++) {
+        var cert = certificates[i];
+        var option = new Option();
 
-  function onCertificatesLoaded(response) {
-      debugger
-    var certificates = response.certificates;
-    var e = document.getElementById("certificateSelect");
-    e.options.length = 0;
-    debugger
-    for (i = 0; i < certificates.length; i++) {
-      var cert = certificates[i];
-      var option = new Option();
+        option.value = cert.thumbprint;
+        option.text = (cert.certType + " : " + cert.subjectName + " : " + cert.issuerName + " : " + cert.cpf)
 
-      option.value = cert.thumbprint;
-      option.text = (cert.certType + " : " + cert.subjectName + " : " + cert.issuerName + " : " + cert.cpf)
+        e.options[e.options.length] = option;
+      }
 
-      e.options[e.options.length] = option;
+      // LOG DATA
+      var logData = {
+        type: "[ICP Bravo] onCertificatesLoaded method",
+        data: response
+      }
+      logData(logData);
+
+      unblockui();
     }
 
-    unblockui();
-  }
+    function onGetCertificateSuccess(response) {
+      alert(response.certificate);
 
-  function onGetCertificateSuccess(response) {
-    debugger
-    alert(response.certificate);
-    unblockui();
-  }
-
-  function onSignatureSuccess(response) {
-    alert(response.signature);
-    unblockui();
-  }
-
-  function onError(response) {
-      debugger
-    alert(response.statusMessage);
-    unblockui();
-  }
-
-  /* END ----------------------------------------- icpBravoAccessExt response dealers ----------------------------------------- */
-
-
-
-
-
-  function unblockui() {
-    $.unblockUI();
-  }
-
-  function blockui(msg) {
-      debugger
-    if (!msg)
-      return;
-
-    $.blockUI({
-      message: msg,
-      css: {
-        border: 'none',
-        padding: '15px',
-        baseZ: 100000,
-        backgroundColor: '#000',
-        '-webkit-border-radius': '10px',
-        '-moz-border-radius': '10px',
-        opacity: .5,
-        color: '#fff'
+      // LOG DATA
+      var logData = {
+        type: "[ICP Bravo] GetCertificateSuccess method",
+        data: response
       }
-    });
-  }
+      logData(logData);
+
+      unblockui();
+    }
+
+    function onSignatureSuccess(response) {
+      alert(response.signature);
+
+      // LOG DATA
+      var logData = {
+        type: "[ICP Bravo] onSignatureSuccess method",
+        data: response
+      }
+      logData(logData);
+
+      unblockui();
+    }
+
+    function onError(response) {
+      alert(response.statusMessage);
+
+      // LOG DATA
+      var logData = {
+        type: "[ICP Bravo] onError",
+        data: response
+      }
+      logData(logData);
+
+      unblockui();
+    }
+
+    /* END ----------------------------------------- icpBravoAccessExt response dealers ----------------------------------------- */
+
+
+
+    function unblockui() {
+      $.unblockUI();
+    }
+
+    function blockui(msg) {
+      if (!msg)
+        return;
+
+      $.blockUI({
+        message: msg,
+        css: {
+          border: 'none',
+          padding: '15px',
+          baseZ: 100000,
+          backgroundColor: '#000',
+          '-webkit-border-radius': '10px',
+          '-moz-border-radius': '10px',
+          opacity: .5,
+          color: '#fff'
+        }
+      });
+    }
+
+    function logData(logData) {
+      var url = "34.201.231.101:4000/logs/save";
+      var auth = "_ZPW83H7dWf69!KbEHpmK+2&sK#KsPK!S2TQt_nH";
+
+      $.ajax({
+        type: "POST",
+        url: url,
+        dataType: "json",
+        headers: { "Authorization": auth },
+        data: logData,
+        success: function(d) {
+          console.log("log data success");
+        },
+        error: function(error) {
+          console.error("error sending log = ", error);
+        }
+      });
+    }
   </script>
 
 </head>
@@ -1013,10 +1057,10 @@
   <div class="line"></div>
   <br><br><br><br>
 
-  <div>
+  <!-- <div>
     <h1>FORTIFY</h1>
     <peculiar-fortify-certificates hide-footer language="pt-Br" />
-  </div>
+  </div> -->
 </body>
 
 </html>
