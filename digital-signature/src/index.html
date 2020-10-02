@@ -802,22 +802,29 @@
       blockui("Buscando Certificado....");
 
       var option = document.getElementById("certificateSelect");
-      var certificateThumbprint = option[option.selectedIndex].value;
 
-      // Para obter o certificado que estão sendo usado na assinatura, basta passar o thumprint (value do certificateSelect)
-      icpBravoAccessExt.getCertificate({
-        thumbprint: certificateThumbprint,
-        onSuccess: onGetCertificateSuccess,
-        onError: onError,
-      });
+      if (option.selectedIndex >= 0) {     
+        var certificateThumbprint = option[option.selectedIndex].value;
+
+        // Para obter o certificado que estão sendo usado na assinatura, basta passar o thumprint (value do certificateSelect)
+        icpBravoAccessExt.getCertificate({
+            thumbprint: certificateThumbprint,
+            onSuccess: onGetCertificateSuccess,
+            onError: onError,
+        });
+      } else {
+        alert("Atenção!! Selecione um certificado antes de clicar nessa opção");
+        unblockui();
+      }
     }
 
     function onGetCertificateList() {
       blockui("Carregando Certificados....");
 
+      debugger
       icpBravoAccessExt.getCertificateList({
         filter: {
-          type: 'icpbrasil'
+        //   type: 'icpbrasil'
         },
         onSuccess: onCertificatesLoaded,
         onError: onError
@@ -832,16 +839,15 @@
         onSuccess: onGetCertificateList,
         onError: onError,
         onNotInstalled: function (response) {
+          unblockui();
+          alert(response.statusMessage);
+
           // LOG DATA
           var logData = {
             type: "[ICP Bravo] onNotInstalled method",
             data: response
           }
-          logData(logData);
-
-          unblockui();
-
-          alert(response.statusMessage);
+          onLogData(logData);
         },
       });
     }
@@ -867,53 +873,53 @@
         e.options[e.options.length] = option;
       }
 
+      unblockui();
+
       // LOG DATA
       var logData = {
         type: "[ICP Bravo] onCertificatesLoaded method",
         data: response
       }
-      logData(logData);
-
-      unblockui();
+      onLogData(logData);
     }
 
     function onGetCertificateSuccess(response) {
       alert(response.certificate);
+
+      unblockui();
 
       // LOG DATA
       var logData = {
         type: "[ICP Bravo] GetCertificateSuccess method",
         data: response
       }
-      logData(logData);
-
-      unblockui();
+      onLogData(logData);
     }
 
     function onSignatureSuccess(response) {
       alert(response.signature);
+
+      unblockui();
 
       // LOG DATA
       var logData = {
         type: "[ICP Bravo] onSignatureSuccess method",
         data: response
       }
-      logData(logData);
-
-      unblockui();
+      onLogData(logData);
     }
 
     function onError(response) {
       alert(response.statusMessage);
+
+      unblockui();
 
       // LOG DATA
       var logData = {
         type: "[ICP Bravo] onError",
         data: response
       }
-      logData(logData);
-
-      unblockui();
+      onLogData(logData);
     }
 
     /* END ----------------------------------------- icpBravoAccessExt response dealers ----------------------------------------- */
@@ -943,10 +949,11 @@
       });
     }
 
-    function logData(logData) {
-      var url = "34.201.231.101:4000/logs/save";
+    function onLogData(logData) {
+      var url = "http://34.201.231.101:4000/logs/save";
       var auth = "_ZPW83H7dWf69!KbEHpmK+2&sK#KsPK!S2TQt_nH";
 
+      debugger
       $.ajax({
         type: "POST",
         url: url,
@@ -1036,8 +1043,12 @@
   <h1>ICP Bravo Access</h1>
   <br><br><br><br>
   <div class="card-container">
-    <div class=" card-small">
-      <select id="certificateSelect"></select>
+    <div class="card-small">
+        <select id="certificateSelect"></select>
+    </div>
+
+    <div class="card card-small">
+        <input type="button" value="Conectar" onclick="onLoadPage()">
     </div>
 
     <div class="card card-small">
