@@ -803,7 +803,7 @@
 
       var option = document.getElementById("certificateSelect");
 
-      if (option.selectedIndex >= 0) {     
+      if (option.selectedIndex >= 0) {
         var certificateThumbprint = option[option.selectedIndex].value;
 
         // Para obter o certificado que estão sendo usado na assinatura, basta passar o thumprint (value do certificateSelect)
@@ -993,8 +993,7 @@
     justify-content: center;
     margin-top: 16px;
   }
-  .card {
-    border-radius: 4px;
+  .card {    border-radius: 4px;
     border: 1px solid #eee;
     background-color: #fafafa;
     height: 40px;
@@ -1048,15 +1047,15 @@
     </div>
 
     <div class="card card-small">
-        <input type="button" value="Conectar" onclick="onLoadPage()">
+        <input type="button" value="1º - Conectar" onclick="onLoadPage()">
     </div>
 
     <div class="card card-small">
-        <input type="button" value="Carregar Certificados" onclick="onGetCertificateList()">
+        <input type="button" value="2º - Carregar Certificados" onclick="onGetCertificateList()">
     </div>
 
     <div class="card card-small">
-        <input type="button" value="Ler Certificado Selecionado" onclick="onGetCertificate()">
+        <input type="button" value="3º - Ler Certificado Selecionado" onclick="onGetCertificate()">
     </div>
 
     <br><br>
@@ -1068,10 +1067,10 @@
   <div class="line"></div>
   <br><br><br><br>
 
-  <!-- <div>
+  <div>
     <h1>FORTIFY</h1>
     <peculiar-fortify-certificates hide-footer language="pt-Br" />
-  </div> -->
+  </div>
 </body>
 
 </html>
